@@ -1,0 +1,17 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pylint = "*"
+twine = "*"
+
+[packages]
+python-gitlab = "*"
+fusepy = "*"
+iso8601 = "*"
+cachetools = "*"
+
+[requires]
+python_version = "3.7"

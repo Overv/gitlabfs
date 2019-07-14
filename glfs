@@ -1,0 +1,70 @@
+#!/usr/bin/env python
+
+# -*- coding: utf-8 -*-
+"""Command-line interface for gitlabfs.
+
+This module presents a user interface for configuring and mounting the file
+system.
+
+"""
+
+import argparse
+import logging
+import sys
+
+import fuse
+import gitlab
+
+import gitlabfs.cache
+import gitlabfs.filesystem
+import gitlabfs.resolver
+
+if __name__ == '__main__':
+    # Configuration
+    parser = argparse.ArgumentParser(description='Access all repositories in a GitLab instance through a file system.')
+
+    parser.add_argument('url', help="URL of the GitLab instance")
+    parser.add_argument('accesstoken', help="Personal access token with the 'api' scope")
+    parser.add_argument('mountpoint', help="Mountpoint of file system")
+
+    parser.add_argument('--tags', action='store_true', help="Include tags in repository refs")
+    parser.add_argument('--users', action='store_true', help="Include user repositories")
+    parser.add_argument('--file-times', action='store_true', help="Better approximate file times with commit metadata")
+
+    parser.add_argument('--cache-expiry', metavar='SEC', type=int, default=60, help="Expire the cache after this many seconds (default: 60)")
+    parser.add_argument('--fresh-project-tree', action='store_true', help="Enable cache expiry for the project tree")
+
+    parser.add_argument('--debug', action='store_true', help='Enable verbose logging')
+
+    args = parser.parse_args()
+
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+
+    # Initialize API
+    try:
+        api = gitlab.Gitlab(args.url, private_token=args.accesstoken)
+        api.auth()
+    except gitlab.exceptions.GitlabAuthenticationError:
+        print("Specified access token is invalid!")
+        sys.exit(1)
+    except gitlab.exceptions.GitlabGetError as e:
+        if e.error_message == 'insufficient_scope':
+            print("Specified access token does not have 'api' scope!")
+            sys.exit(1)
+        elif e.response_code == 404:
+            print("Invalid GitLab url specified! Make sure to specify the root e.g. https://gitlab.com.")
+            sys.exit(1)
+        else:
+            raise e
+
+    # Initialize API cache wrapper
+    cacheFactory = gitlabfs.cache.cache_factory(args.cache_expiry, args.fresh_project_tree)
+    cache = cacheFactory(api)
+
+    # Initialize resolver and file system
+    resolver = gitlabfs.resolver.Resolver(cache, args.users, args.tags, args.file_times)
+    fs = gitlabfs.filesystem.Operations(resolver)
+
+    # Mount file system
+    fuse = fuse.FUSE(fs, args.mountpoint, foreground=True)
