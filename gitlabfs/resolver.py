@@ -423,7 +423,7 @@ class Resolver:
 
                 if distance == 1:
                     if type(node) is gitlab.v4.objects.Group or type(node) is gitlab.v4.objects.Project:
-                        members.append(node.name)
+                        members.append(node.path)
                     elif type(node) is gitlab.v4.objects.User:
                         members.append(node.username)
 
