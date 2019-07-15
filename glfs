@@ -66,5 +66,10 @@ if __name__ == '__main__':
     resolver = gitlabfs.resolver.Resolver(cache, args.users, args.tags, args.file_times)
     fs = gitlabfs.filesystem.Operations(resolver)
 
+    # Warm up project tree
+    print("Building project tree...")
+    cache.get_tree(args.users)
+    print("Ready.")
+
     # Mount file system
     fuse = fuse.FUSE(fs, args.mountpoint, foreground=True)
