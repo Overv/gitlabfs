@@ -6,7 +6,7 @@ hierarchy.
 
 """
 
-from enum import Enum, auto
+from enum import Enum
 import os.path
 import pathlib
 import stat
@@ -57,13 +57,13 @@ def create_directory_attributes(time):
 class EntityType(Enum):
     """Types of entities in GitLab exposed as file system objects."""
 
-    ROOT = auto()
-    GROUP = auto()
-    USER = auto()
-    PROJECT = auto()
-    REF_LEVEL = auto()
-    REPOSITORY_FILE = auto()
-    REPOSITORY_DIR = auto()
+    ROOT = 0
+    GROUP = 1
+    USER = 2
+    PROJECT = 3
+    REF_LEVEL = 4
+    REPOSITORY_FILE = 5
+    REPOSITORY_DIR = 6
 
 class Entity:
     """Class that represents an entity in GitLab for the file system.

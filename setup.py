@@ -5,7 +5,7 @@ with open('README.md', 'r') as f:
 
 setuptools.setup(
     name='gitlabfs',
-    version='1.0.3',
+    version='1.0.4',
     scripts=['glfs'] ,
     author="Alexander Overvoorde",
     author_email="overv161@gmail.com",
@@ -15,7 +15,7 @@ setuptools.setup(
     url="https://github.com/Overv/gitlabfs",
     packages=['gitlabfs'],
     classifiers=[
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.5",
         "License :: OSI Approved :: MIT License",
         "Operating System :: POSIX :: Linux",
     ],
@@ -24,5 +24,6 @@ setuptools.setup(
         'fusepy',
         'iso8601',
         'cachetools'
-    ]
+    ],
+    python_requires='>=3.5'
 )

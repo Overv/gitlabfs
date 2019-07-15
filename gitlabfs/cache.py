@@ -156,7 +156,7 @@ def cache_factory(cacheExpiry, expireProjectTree):
             # out of the box
             response = self.api.http_request(
                 'head',
-                f'/projects/{project.id}/repository/files/{safePath}',
+                '/projects/%s/repository/files/%s' % (project.id, safePath),
                 ref=ref.name
             )
 
