@@ -234,9 +234,11 @@ class Resolver:
             return None, None, None
 
         for ref in self.cache.list_project_refs(project, self.tagRefs):
-            if remainingPath.as_posix().startswith(ref.name):
-                remainingPath = remainingPath.relative_to(pathlib.Path(ref.name))
-                return project, ref, remainingPath
+            try:
+                treePath = remainingPath.relative_to(pathlib.Path(ref.name))
+                return project, ref, treePath
+            except ValueError:
+                continue
 
         return None, None, None
 
