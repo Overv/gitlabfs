@@ -40,8 +40,10 @@ Install the latest version of gitlabfs from [PyPI](https://pypi.org/project/gitl
 3. Mount GitLab at that directory:
 
     ```
-    glfs https://gitlab.mycompany.com accesstoken ~/gitlab
+    glfs https://gitlab.mycompany.com ~/gitlab
     ```
+
+  You will be asked to provide your access token and then the GitLab hierarchy will be mounted.
 
 ## Configuration
 
@@ -56,6 +58,8 @@ Various options can be passed to configure the properties of the file system:
 
 Many of these are not enabled by default because they may result in worse performance or more clutter.
 
+The access token must be provided via a command line prompt by default, but can also be passed via the `GITLAB_TOKEN` environment variable.
+
 ## Limitations
 
 * Not designed for GitLab instances with a huge number of projects (e.g. gitlab.com).
@@ -67,7 +71,7 @@ The file system can be easily run locally with [Pipenv](https://github.com/pypa/
 
 ```
 pipenv install
-pipenv run ./glfs <url> <token> <mountpoint> <options>
+pipenv run ./glfs <url> <mountpoint> [options]
 ```
 
 And the PyPI package is published using the following commands:

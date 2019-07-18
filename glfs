@@ -9,7 +9,9 @@ system.
 """
 
 import argparse
+import getpass
 import logging
+import os
 import sys
 
 import fuse
@@ -24,7 +26,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Access all repositories in a GitLab instance through a file system.')
 
     parser.add_argument('url', help="URL of the GitLab instance")
-    parser.add_argument('accesstoken', help="Personal access token with the 'api' scope")
     parser.add_argument('mountpoint', help="Mountpoint of file system")
 
     parser.add_argument('--tags', action='store_true', help="Include tags in repository refs")
@@ -41,9 +42,15 @@ if __name__ == '__main__':
     if args.debug:
         logging.basicConfig(level=logging.DEBUG)
 
+    # Ask for access token unless it's passed via the environment
+    if 'GITLAB_TOKEN' in os.environ:
+        accessToken = os.environ['GITLAB_TOKEN']
+    else:
+        accessToken = getpass.getpass(prompt='Access token: ')
+
     # Initialize API
     try:
-        api = gitlab.Gitlab(args.url, private_token=args.accesstoken)
+        api = gitlab.Gitlab(args.url, private_token=accessToken)
         api.auth()
     except gitlab.exceptions.GitlabAuthenticationError:
         print("Specified access token is invalid!")

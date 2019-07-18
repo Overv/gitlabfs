@@ -5,7 +5,7 @@ with open('README.md', 'r') as f:
 
 setuptools.setup(
     name='gitlabfs',
-    version='1.0.5',
+    version='1.1.0',
     scripts=['glfs'] ,
     author="Alexander Overvoorde",
     author_email="overv161@gmail.com",
